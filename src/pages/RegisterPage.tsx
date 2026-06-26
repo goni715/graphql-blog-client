@@ -9,8 +9,8 @@ const RegisterPage = () => {
     <div className="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8 bg-slate-950 overflow-hidden">
       {/* Background gradients */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none"></div>
-        <div className="absolute -bottom-40 -left-40 h-[600px] w-[600px] rounded-full bg-indigo-600/10 blur-[120px] pointer-events-none"></div>
+        <div className="absolute -top-40 -right-40 h-150 w-150 rounded-full bg-purple-600/10 blur-[120px] pointer-events-none"></div>
+        <div className="absolute -bottom-40 -left-40 h-150 w-150 rounded-full bg-indigo-600/10 blur-[120px] pointer-events-none"></div>
       </div>
 
       <div className="relative z-10 w-full max-w-md">
@@ -26,7 +26,7 @@ const RegisterPage = () => {
         {/* Card */}
         <div className="w-full rounded-2xl border border-slate-800/80 bg-slate-900/60 p-8 backdrop-blur-xl shadow-2xl">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-extrabold tracking-tight text-white bg-gradient-to-r from-indigo-200 via-slate-100 to-purple-200 bg-clip-text text-transparent">
+            <h2 className="text-3xl font-extrabold tracking-tight text-white bg-linear-to-r from-indigo-200 via-slate-100 to-purple-200 bg-clip-text">
               Create an account
             </h2>
             <p className="mt-2 text-sm text-slate-400">

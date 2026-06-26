@@ -2,8 +2,22 @@ import React, { useState } from "react";
 import { usePosts } from "../context/PostContext";
 import type { Post } from "../context/PostContext";
 import { useAuth } from "../context/AuthContext";
-import { Search, Calendar, User, Plus, Send, X, FileText, CheckCircle, FilePlus, ExternalLink } from "lucide-react";
+import {
+  Search,
+  Calendar,
+  User,
+  Plus,
+  Send,
+  X,
+  FileText,
+  CheckCircle,
+  FilePlus,
+  ExternalLink,
+} from "lucide-react";
 import { Link } from "react-router-dom";
+import { gql } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
+import type { IPost } from "../types/post.type";
 
 const BlogsPage: React.FC = () => {
   const { posts, addPost, togglePublish } = usePosts();
@@ -11,7 +25,9 @@ const BlogsPage: React.FC = () => {
 
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterType, setFilterType] = useState<"all" | "published" | "drafts">("all");
+  const [filterType, setFilterType] = useState<"all" | "published" | "drafts">(
+    "all",
+  );
 
   // Detailed view state
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
@@ -50,36 +66,42 @@ const BlogsPage: React.FC = () => {
     setIsCreateOpen(false);
   };
 
-  // Filter posts
-  const filteredPosts = posts.filter((post) => {
-    const matchesSearch =
-      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.author.name.toLowerCase().includes(searchQuery.toLowerCase());
-
-    const matchesStatus =
-      filterType === "all" ||
-      (filterType === "published" && post.published) ||
-      (filterType === "drafts" && !post.published);
-
-    return matchesSearch && matchesStatus;
-  });
 
   // Featured post is typically the first published post
   const featuredPost = posts.find((p) => p.published);
 
-  // Other posts (excluding featured post in the list to avoid duplicate display, but display all if searched)
-  const listPosts = searchQuery
-    ? filteredPosts
-    : filteredPosts.filter((p) => p.id !== featuredPost?.id);
+
+
+  const GET_ALL_POSTS = gql`
+    query POSTS_DATA {
+      posts {
+        id
+        title
+        content
+        published
+        createdAt
+        author {
+          id
+          name
+          email
+        }
+      }
+    }
+  `;
+
+  const { loading, error, data } = useQuery(GET_ALL_POSTS);
+  const postsArr: IPost[] = (data as any)?.posts || [];
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error : {error.message}</p>;
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-slate-950 text-slate-100 pb-16">
       {/* Hero Section */}
       <div className="relative overflow-hidden border-b border-slate-900 bg-slate-950 py-16 sm:py-24">
         {/* Glow Effects */}
-        <div className="absolute top-0 left-1/4 h-[500px] w-[500px] -translate-y-1/2 rounded-full bg-indigo-500/10 blur-[120px] pointer-events-none"></div>
-        <div className="absolute top-1/3 right-1/4 h-[500px] w-[500px] rounded-full bg-purple-500/10 blur-[120px] pointer-events-none"></div>
+        <div className="absolute top-0 left-1/4 h-125 w-125 -translate-y-1/2 rounded-full bg-indigo-500/10 blur-[120px] pointer-events-none"></div>
+        <div className="absolute top-1/3 right-1/4 h-125 w-125 rounded-full bg-purple-500/10 blur-[120px] pointer-events-none"></div>
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-6">
@@ -87,12 +109,13 @@ const BlogsPage: React.FC = () => {
           </div>
           <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl text-white">
             Explore the latest in{" "}
-            <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
               GraphQL & React
             </span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-400">
-            A beautiful, reactive client workspace simulating API states, user credentials, and dynamic postings with full Tailwind styling.
+            A beautiful, reactive client workspace simulating API states, user
+            credentials, and dynamic postings with full Tailwind styling.
           </p>
 
           {/* Action buttons */}
@@ -100,7 +123,7 @@ const BlogsPage: React.FC = () => {
             {currentUser ? (
               <button
                 onClick={() => setIsCreateOpen(true)}
-                className="flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg shadow-indigo-600/20"
+                className="flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg shadow-indigo-600/20"
               >
                 <Plus className="h-5 w-5" />
                 <span>Write a Post</span>
@@ -176,12 +199,12 @@ const BlogsPage: React.FC = () => {
         {/* Featured Post Card (only displayed when no active search) */}
         {!searchQuery && featuredPost && filterType !== "drafts" && (
           <div className="mb-16">
-            <h2 className="text-xl font-bold text-slate-400 uppercase tracking-widest text-xs mb-4">
+            <h2 className="font-bold text-slate-400 uppercase tracking-widest text-xs mb-4">
               Featured Article
             </h2>
-            <div className="group relative grid grid-cols-1 lg:grid-cols-12 gap-8 rounded-2xl border border-slate-800/70 bg-gradient-to-b from-slate-900/50 to-slate-950/50 p-6 sm:p-8 backdrop-blur-md overflow-hidden hover:border-indigo-500/30 transition-all duration-300 shadow-xl">
+            <div className="group relative grid grid-cols-1 lg:grid-cols-12 gap-8 rounded-2xl border border-slate-800/70 bg-linear-to-b from-slate-900/50 to-slate-950/50 p-6 sm:p-8 backdrop-blur-md overflow-hidden hover:border-indigo-500/30 transition-all duration-300 shadow-xl">
               {/* Card visual gradient */}
-              <div className="absolute right-0 top-0 w-[400px] h-[300px] bg-gradient-to-tr from-indigo-500/5 to-purple-500/5 blur-[50px] pointer-events-none group-hover:scale-110 transition-transform duration-500"></div>
+              <div className="absolute right-0 top-0 w-100 h-75 bg-linear-to-tr from-indigo-500/5 to-purple-500/5 blur-[50px] pointer-events-none group-hover:scale-110 transition-transform duration-500"></div>
 
               {/* Text Info */}
               <div className="lg:col-span-8 flex flex-col justify-between">
@@ -212,14 +235,16 @@ const BlogsPage: React.FC = () => {
                 {/* Author footer */}
                 <div className="flex items-center justify-between border-t border-slate-900 pt-6">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-white font-bold text-sm">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-linear-to-tr from-indigo-500 to-purple-500 text-white font-bold text-sm">
                       {featuredPost.author.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
                       <div className="text-sm font-semibold text-white">
                         {featuredPost.author.name}
                       </div>
-                      <div className="text-xs text-slate-500">{featuredPost.author.email}</div>
+                      <div className="text-xs text-slate-500">
+                        {featuredPost.author.email}
+                      </div>
                     </div>
                   </div>
 
@@ -238,19 +263,27 @@ const BlogsPage: React.FC = () => {
                 <div className="h-12 w-12 rounded-full bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center mb-4">
                   <FileText className="h-6 w-6 text-indigo-400" />
                 </div>
-                <h4 className="text-white font-semibold text-sm">GraphQL Object Schema</h4>
+                <h4 className="text-white font-semibold text-sm">
+                  GraphQL Object Schema
+                </h4>
                 <div className="mt-3 text-left w-full bg-slate-950/80 rounded-lg p-3 border border-slate-900 font-mono text-[10px] text-indigo-300 overflow-x-auto select-all">
-                  <pre>{JSON.stringify({
-                    id: featuredPost.id,
-                    title: featuredPost.title,
-                    published: featuredPost.published,
-                    createdAt: featuredPost.createdAt,
-                    author: {
-                      id: featuredPost.author.id,
-                      name: featuredPost.author.name,
-                      email: featuredPost.author.email
-                    }
-                  }, null, 2)}</pre>
+                  <pre>
+                    {JSON.stringify(
+                      {
+                        id: featuredPost.id,
+                        title: featuredPost.title,
+                        published: featuredPost.published,
+                        createdAt: featuredPost.createdAt,
+                        author: {
+                          id: featuredPost.author.id,
+                          name: featuredPost.author.name,
+                          email: featuredPost.author.email,
+                        },
+                      },
+                      null,
+                      2,
+                    )}
+                  </pre>
                 </div>
               </div>
             </div>
@@ -259,13 +292,15 @@ const BlogsPage: React.FC = () => {
 
         {/* Regular Posts Grid */}
         <div>
-          <h2 className="text-xl font-bold text-slate-400 uppercase tracking-widest text-xs mb-6">
+          <h2 className="font-bold text-slate-400 uppercase tracking-widest text-xs mb-6">
             {searchQuery ? "Search Results" : "All Articles"}
           </h2>
 
-          {listPosts.length === 0 ? (
+          {postsArr.length === 0 ? (
             <div className="text-center py-16 border border-dashed border-slate-800 rounded-2xl">
-              <p className="text-slate-400 mb-2">No posts found matching your filters.</p>
+              <p className="text-slate-400 mb-2">
+                No posts found matching your filters.
+              </p>
               <button
                 onClick={() => {
                   setSearchQuery("");
@@ -278,7 +313,7 @@ const BlogsPage: React.FC = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {listPosts.map((post) => (
+              {postsArr.map((post) => (
                 <article
                   key={post.id}
                   onClick={() => setSelectedPost(post)}
@@ -321,7 +356,7 @@ const BlogsPage: React.FC = () => {
                       <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-800 text-slate-300 font-bold text-xs border border-slate-700">
                         {post.author.name.charAt(0).toUpperCase()}
                       </div>
-                      <span className="text-xs font-semibold text-slate-300 truncate max-w-[120px]">
+                      <span className="text-xs font-semibold text-slate-300 truncate max-w-30">
                         {post.author.name}
                       </span>
                     </div>
@@ -373,17 +408,22 @@ const BlogsPage: React.FC = () => {
 
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-white font-bold">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-linear-to-tr from-indigo-500 to-purple-500 text-white font-bold">
                   {selectedPost.author.name.charAt(0).toUpperCase()}
                 </div>
                 <div>
-                  <div className="text-sm font-semibold text-white">{selectedPost.author.name}</div>
-                  <div className="text-xs text-slate-500">{selectedPost.author.email}</div>
+                  <div className="text-sm font-semibold text-white">
+                    {selectedPost.author.name}
+                  </div>
+                  <div className="text-xs text-slate-500">
+                    {selectedPost.author.email}
+                  </div>
                 </div>
               </div>
 
               <div className="bg-slate-950 p-2.5 rounded-lg border border-slate-800 font-mono text-[10px] text-indigo-400">
-                Post ID: {selectedPost.id} | JSON Published: {selectedPost.published ? "true" : "false"}
+                Post ID: {selectedPost.id} | JSON Published:{" "}
+                {selectedPost.published ? "true" : "false"}
               </div>
             </div>
           </div>
@@ -410,7 +450,10 @@ const BlogsPage: React.FC = () => {
 
             <form onSubmit={handleCreatePost} className="space-y-5">
               <div>
-                <label htmlFor="post-title" className="block text-sm font-medium text-slate-300 mb-2">
+                <label
+                  htmlFor="post-title"
+                  className="block text-sm font-medium text-slate-300 mb-2"
+                >
                   Title
                 </label>
                 <input
@@ -425,7 +468,10 @@ const BlogsPage: React.FC = () => {
               </div>
 
               <div>
-                <label htmlFor="post-content" className="block text-sm font-medium text-slate-300 mb-2">
+                <label
+                  htmlFor="post-content"
+                  className="block text-sm font-medium text-slate-300 mb-2"
+                >
                   Content Body
                 </label>
                 <textarea
@@ -441,12 +487,15 @@ const BlogsPage: React.FC = () => {
 
               <div className="flex items-center gap-2 p-3 bg-indigo-500/5 border border-indigo-500/10 rounded-xl text-xs text-indigo-400">
                 <CheckCircle className="h-4 w-4 shrink-0" />
-                <span>Creating this post registers it under your current profile: {currentUser.name}</span>
+                <span>
+                  Creating this post registers it under your current profile:{" "}
+                  {currentUser.name}
+                </span>
               </div>
 
               <button
                 type="submit"
-                className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-md transition-all duration-300"
+                className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-md transition-all duration-300"
               >
                 <Send className="h-4 w-4" />
                 <span>Publish Post</span>
