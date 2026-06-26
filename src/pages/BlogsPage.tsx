@@ -18,6 +18,7 @@ import { Link } from "react-router-dom";
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
 import type { IPost } from "../types/post.type";
+import formatDate from "../utils/formatDate";
 
 const BlogsPage: React.FC = () => {
   const { posts, addPost, togglePublish } = usePosts();
@@ -37,19 +38,6 @@ const BlogsPage: React.FC = () => {
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
 
-  const formatDate = (timestampStr: string) => {
-    try {
-      const ts = parseInt(timestampStr);
-      if (!isNaN(ts)) {
-        return new Date(ts).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
-      }
-    } catch (e) {}
-    return "June 17, 2026";
-  };
 
   const handleCreatePost = (e: React.FormEvent) => {
     e.preventDefault();
