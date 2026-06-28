@@ -1,4 +1,4 @@
-# 📝 GraphQL Blog Client
+# 📝 GraphQL Blog Client Project
 
 A sleek, reactive blog platform built with **React 19 + TypeScript + Apollo Client v4 + Tailwind CSS v4**, powered by a **GraphQL API**. Users can browse published posts, register an account, sign in, write new posts, edit drafts, publish them, and delete posts — all through a beautifully styled dark-mode interface.
 
