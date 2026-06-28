@@ -2,6 +2,12 @@
 
 A sleek, reactive blog platform built with **React 19 + TypeScript + Apollo Client v4 + Tailwind CSS v4**, powered by a **GraphQL API**. Users can browse published posts, register an account, sign in, write new posts, edit drafts, publish them, and delete posts — all through a beautifully styled dark-mode interface.
 
+
+| | |
+|---|---|
+| 🔗 **GitHub** | https://github.com/goni715/graphql-blog-client |
+| 🌐 **Live Demo** | https://graphql-blog-goni.vercel.app/ |
+
 ---
 
 ## 🚀 Tech Stack
@@ -456,7 +462,9 @@ The root renders:
 Create `.env` in the `src/` directory:
 
 ```env
-VITE_API_BASE_URL=https://your-graphql-api.com/graphql
+VITE_API_BASE_URL=https://your-graphql-api.com
+or
+VITE_API_BASE_URL=http://localhost:4000
 ```
 
 | Variable | Required | Description |
@@ -479,17 +487,14 @@ VITE_API_BASE_URL=https://your-graphql-api.com/graphql
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-username/graphql-blog-client.git
+git clone https://github.com/goni715/graphql-blog-client.git
 cd graphql-blog-client
 
 # 2. Install dependencies
-npm install
-
-# 3. Configure environment
-echo "VITE_API_BASE_URL=http://localhost:4000/graphql" > src/.env
+npm install || yarn install
 
 # 4. Start the development server
-npm run dev
+npm run dev || yarn dev
 ```
 
 App runs at **`http://localhost:5173`**
