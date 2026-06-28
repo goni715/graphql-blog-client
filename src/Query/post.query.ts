@@ -16,3 +16,28 @@ export const GET_ALL_POSTS = gql`
     }
   }
 `;
+
+export const GET_MY_POSTS = gql`
+  query GET_MY_POSTS {
+    me {
+      userError
+      user {
+        id
+        name
+        email
+        posts {
+          id
+          title
+          content
+          published
+          createdAt
+          author {
+            id
+            name
+            email
+          }
+        }
+      }
+    }
+  }
+`;

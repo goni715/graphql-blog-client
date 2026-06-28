@@ -51,6 +51,12 @@ const Navbar = () => {
               <span>Posts</span>
             </Link>
 
+            {token && (
+              <Link to="/myposts" className={linkClass("/myposts")}>
+                <span>My Posts</span>
+              </Link>
+            )}
+
             {token && name ? (
               <div className="flex items-center gap-4 pl-4 border-l border-slate-800">
                 <div className="flex items-center gap-2">
@@ -112,6 +118,16 @@ const Navbar = () => {
           >
             <span>Posts</span>
           </Link>
+
+          {token && (
+            <Link
+              to="/myposts"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={mobileLinkClass("/myposts")}
+            >
+              <span>My Posts</span>
+            </Link>
+          )}
 
           {token && name ? (
             <div className="pt-4 border-t border-slate-800/60 mt-4 space-y-3">

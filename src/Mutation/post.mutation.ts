@@ -12,3 +12,17 @@ export const CREATE_POST = gql`
     }
   }
 `;
+
+export const PUBLISH_POST = gql`
+  mutation PublishPost($postId: ID!) {
+    publishPost(postId: $postId) {
+      userError
+      post {
+        id
+        title
+        content
+        published
+      }
+    }
+  }
+`;

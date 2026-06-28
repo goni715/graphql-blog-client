@@ -30,12 +30,12 @@ const BlogsPage = () => {
           <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl text-white">
             Explore the latest in{" "}
             <span className="bg-linear-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              GraphQL & React
+              GraphQL Blog Client
             </span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-400">
-            A beautiful, reactive client workspace simulating API states, user
-            credentials, and dynamic postings with full Tailwind styling.
+            A beautiful, reactive client application for reading and publishing blog
+            posts using GraphQL, featuring instant loading states and sleek modern styling.
           </p>
 
           {/* Action buttons */}

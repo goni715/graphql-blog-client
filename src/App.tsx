@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import BlogsPage from "./pages/BlogsPage";
+import MyPostsPage from "./pages/MyPostsPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import Navbar from "./components/Navbar";
@@ -15,6 +16,7 @@ const App: React.FC = () => {
           <main className="grow">
             <Routes>
               <Route path="/" element={<BlogsPage />} />
+              <Route path="/myposts" element={<MyPostsPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
             </Routes>
