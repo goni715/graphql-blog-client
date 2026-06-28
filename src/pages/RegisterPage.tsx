@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 import RegisterForm from "../components/RegisterForm";
 
 const RegisterPage = () => {
-
-
   return (
     <div className="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8 bg-slate-950 overflow-hidden">
       {/* Background gradients */}

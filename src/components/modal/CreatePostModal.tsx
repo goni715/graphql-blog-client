@@ -1,7 +1,10 @@
-import { CheckCircle, FilePlus, Send, X } from "lucide-react";
+import { CheckCircle, FilePlus, Loader2, Send, X } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 import { getName } from "../../helper/SessionHelper";
+import { useMutation } from "@apollo/client/react";
+import { CREATE_POST } from "../../Mutation/post.mutation";
+import { ErrorToast, SuccessToast } from "../../helper/ValidationHelper";
 
 type TProps = {
   setCreateModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -9,22 +12,30 @@ type TProps = {
 
 const CreatePostModal = ({ setCreateModalOpen }: TProps) => {
   const name = getName();
-  const [newTitle, setNewTitle] = useState("");
-  const [newContent, setNewContent] = useState("");
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [createPost, { loading }] = useMutation(CREATE_POST);
 
-  const handleCreatePost = (e: React.FormEvent) => {
+  const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTitle.trim() || !newContent.trim()) return;
+    if (!title.trim() || !content.trim()) return;
 
-    // addPost(newTitle.trim(), newContent.trim(), {
-    //   id: currentUser.id,
-    //   name: currentUser.name,
-    //   email: currentUser.email,
-    // });
-
-    setNewTitle("");
-    setNewContent("");
-    setCreateModalOpen(false);
+    try {
+      await createPost({
+        variables: {
+          post: {
+            title,
+            content,
+          },
+        },
+      });
+      setTitle("");
+      setContent("");
+      SuccessToast("Post created successfully.")
+      setCreateModalOpen(false);
+    } catch {
+      ErrorToast("Something Went Wrong")
+    }
   };
 
   return (
@@ -57,9 +68,9 @@ const CreatePostModal = ({ setCreateModalOpen }: TProps) => {
                 id="post-title"
                 type="text"
                 required
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                placeholder="e.g. Modern Caching techniques with GraphQL"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="write a title"
                 className="block w-full rounded-xl border border-slate-800 bg-slate-950/80 py-3 px-4 text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 transition-all"
               />
             </div>
@@ -75,8 +86,8 @@ const CreatePostModal = ({ setCreateModalOpen }: TProps) => {
                 id="post-content"
                 required
                 rows={6}
-                value={newContent}
-                onChange={(e) => setNewContent(e.target.value)}
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
                 placeholder="Write your article markdown or plain content here..."
                 className="block w-full rounded-xl border border-slate-800 bg-slate-950/80 py-3 px-4 text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 transition-all resize-none"
               />
@@ -94,8 +105,17 @@ const CreatePostModal = ({ setCreateModalOpen }: TProps) => {
               type="submit"
               className="flex w-full items-center justify-center cursor-pointer disabled:cursor-not-allowed gap-2 rounded-xl py-3 text-sm font-semibold text-white bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-md transition-all duration-300"
             >
-              <Send className="h-4 w-4" />
-              <span>Create Post</span>
+              {loading ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <span>Creating...</span>
+                </>
+              ) : (
+                <>
+                  <Send className="h-4 w-4" />
+                  <span>Create Post</span>
+                </>
+              )}
             </button>
           </form>
         </div>
