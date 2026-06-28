@@ -24,4 +24,5 @@ class SessionHelper {
   }
 }
 
-export const { setToken, getToken, logout } = new SessionHelper();
+export const { setToken, setName, getName, getToken, logout } =
+  new SessionHelper();

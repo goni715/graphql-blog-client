@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import { gql } from "@apollo/client";
 import { useMutation } from "@apollo/client/react";
+import { SuccessToast } from "../helper/ValidationHelper";
+import { setName, setToken } from "../helper/SessionHelper";
 
 const LOGIN = gql`
   mutation Login($email: String!, $password: String!) {
@@ -33,6 +35,9 @@ const LoginForm = () => {
   useEffect(() => {
     if (result && result?.token!) {
       //navigate("/login");
+      SuccessToast("Login Success");
+      setToken(result?.token);
+      setName(email.split("@")[0]);
     } else {
       setError(result.userError);
     }
