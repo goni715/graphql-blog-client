@@ -27,10 +27,10 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (result && result?.token!) {
-      //navigate("/login");
       SuccessToast("Login Success");
       setToken(result?.token);
       setName(email.split("@")[0]);
+      navigate("/");
     } else {
       setError(result.userError);
     }
