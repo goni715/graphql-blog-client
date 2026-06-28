@@ -19,10 +19,12 @@ import { useQuery } from "@apollo/client/react";
 import type { IPost } from "../types/post.type";
 import formatDate from "../utils/formatDate";
 import { GET_ALL_POSTS } from "../Query/post.query";
+import { getToken } from "../helper/SessionHelper";
 
 const BlogsPage: React.FC = () => {
   const { posts, addPost, togglePublish } = usePosts();
   const { currentUser } = useAuth();
+  const token = getToken();
 
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState("");

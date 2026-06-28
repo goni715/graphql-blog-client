@@ -7,9 +7,11 @@ import { ApolloProvider } from "@apollo/client/react";
 import { HttpLink } from "@apollo/client";
 import { Toaster } from "react-hot-toast";
 
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
 const client = new ApolloClient({
   link: new HttpLink({
-    uri: "http://localhost:4000",
+    uri: baseUrl,
   }),
   cache: new InMemoryCache(),
 });
@@ -17,7 +19,7 @@ const client = new ApolloClient({
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ApolloProvider client={client}>
-      <Toaster position="top-right"/>
+      <Toaster position="top-right" />
       <App />
     </ApolloProvider>
   </StrictMode>,
