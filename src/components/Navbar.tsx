@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { BookOpen, LogIn, UserPlus, LogOut, Menu, X } from "lucide-react";
 import { getEmail, getName, getToken, logout } from "../helper/SessionHelper";
@@ -6,24 +6,28 @@ import { getEmail, getName, getToken, logout } from "../helper/SessionHelper";
 const Navbar = () => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const name = getName();
-  const token = getToken();
-  const email = getEmail();
+  const [name, setName] = useState(getName() || "");
+  const [token, setToken] = useState(getToken() || "");
+  const [email, setEmail] = useState(getEmail() || "");
+
+  useEffect(() => {
+    setName(getName() || "");
+    setToken(getToken() || "");
+    setEmail(getEmail() || "");
+  }, [location.pathname]);
 
   const isActive = (path: string) => location.pathname === path;
 
   const linkClass = (path: string) =>
-    `flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-      isActive(path)
-        ? "bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 shadow-[0_0_15px_rgba(99,102,241,0.15)]"
-        : "text-slate-300 hover:text-white hover:bg-slate-800/50"
+    `flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${isActive(path)
+      ? "bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 shadow-[0_0_15px_rgba(99,102,241,0.15)]"
+      : "text-slate-300 hover:text-white hover:bg-slate-800/50"
     }`;
 
   const mobileLinkClass = (path: string) =>
-    `flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-all duration-300 ${
-      isActive(path)
-        ? "bg-indigo-600/20 text-indigo-400 border border-indigo-500/30"
-        : "text-slate-300 hover:text-white hover:bg-slate-800/50"
+    `flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-all duration-300 ${isActive(path)
+      ? "bg-indigo-600/20 text-indigo-400 border border-indigo-500/30"
+      : "text-slate-300 hover:text-white hover:bg-slate-800/50"
     }`;
 
   return (

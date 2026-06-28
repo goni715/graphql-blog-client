@@ -30,6 +30,7 @@ const LoginForm = () => {
       SuccessToast("Login Success");
       setToken(result?.token);
       setName(email.split("@")[0]);
+      setEmail(email);
       navigate("/");
     } else {
       setError(result.userError);
