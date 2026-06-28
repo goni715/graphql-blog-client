@@ -7,15 +7,13 @@ import { GET_ALL_POSTS } from "../Query/post.query";
 import { getToken } from "../helper/SessionHelper";
 import CreatePostModal from "../components/modal/CreatePostModal";
 import BlogCard from "../components/blog/BlogCard";
+import BlogCardSkeleton from "../components/blog/BlogCardSkeleton";
 
 const BlogsPage = () => {
   const token = getToken();
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const { loading, error, data } = useQuery(GET_ALL_POSTS);
   const posts: IPost[] = (data as any)?.posts || [];
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error : {error.message}</p>;
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-slate-950 text-slate-100 pb-16">
@@ -66,7 +64,29 @@ const BlogsPage = () => {
       {/* Main Content Area */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-12">
         <div>
-          {posts.length === 0 ? (
+          {error ? (
+            <div className="mx-auto max-w-2xl text-center py-12 px-6 border border-red-500/20 bg-red-500/5 rounded-2xl">
+              <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10 text-red-400 mb-4">
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">Failed to load posts</h3>
+              <p className="text-sm text-red-400/80 mb-6">{error.message}</p>
+              <button 
+                onClick={() => window.location.reload()}
+                className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-semibold text-white bg-slate-900 border border-slate-800 hover:bg-slate-800 hover:border-slate-700 hover:scale-105 active:scale-95 transition-all duration-300"
+              >
+                Retry Connection
+              </button>
+            </div>
+          ) : loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <BlogCardSkeleton key={index} />
+              ))}
+            </div>
+          ) : posts.length === 0 ? (
             <div className="text-center py-16 border border-dashed border-slate-800 rounded-2xl">
               <p className="text-slate-400 mb-2">No posts found.</p>
             </div>
