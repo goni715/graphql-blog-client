@@ -18,11 +18,26 @@ class SessionHelper {
     return localStorage.getItem("name");
   }
 
+  setEmail(email: string) {
+    localStorage.setItem("email", email);
+  }
+
+  getEmail() {
+    return localStorage.getItem("email");
+  }
+
   logout() {
     localStorage.clear();
     window.location.href = "/login";
   }
 }
 
-export const { setToken, setName, getName, getToken, logout } =
-  new SessionHelper();
+export const {
+  setToken,
+  setName,
+  getName,
+  setEmail,
+  getEmail,
+  getToken,
+  logout,
+} = new SessionHelper();

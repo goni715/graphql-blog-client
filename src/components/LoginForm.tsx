@@ -9,19 +9,12 @@ import {
   LogIn,
   Mail,
 } from "lucide-react";
-import { gql } from "@apollo/client";
 import { useMutation } from "@apollo/client/react";
 import { SuccessToast } from "../helper/ValidationHelper";
 import { setName, setToken } from "../helper/SessionHelper";
+import { LOGIN } from "../Mutation/auth.mutation";
 
-const LOGIN = gql`
-  mutation Login($email: String!, $password: String!) {
-    signin(email: $email, password: $password) {
-      userError
-      token
-    }
-  }
-`;
+
 
 const LoginForm = () => {
   const navigate = useNavigate();

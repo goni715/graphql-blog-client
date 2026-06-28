@@ -15,10 +15,10 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
 import type { IPost } from "../types/post.type";
 import formatDate from "../utils/formatDate";
+import { GET_ALL_POSTS } from "../Query/post.query";
 
 const BlogsPage: React.FC = () => {
   const { posts, addPost, togglePublish } = usePosts();
@@ -38,7 +38,6 @@ const BlogsPage: React.FC = () => {
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
 
-
   const handleCreatePost = (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentUser || !newTitle.trim() || !newContent.trim()) return;
@@ -54,28 +53,8 @@ const BlogsPage: React.FC = () => {
     setIsCreateOpen(false);
   };
 
-
   // Featured post is typically the first published post
   const featuredPost = posts.find((p) => p.published);
-
-
-
-  const GET_ALL_POSTS = gql`
-    query POSTS_DATA {
-      posts {
-        id
-        title
-        content
-        published
-        createdAt
-        author {
-          id
-          name
-          email
-        }
-      }
-    }
-  `;
 
   const { loading, error, data } = useQuery(GET_ALL_POSTS);
   const postsArr: IPost[] = (data as any)?.posts || [];

@@ -10,18 +10,9 @@ import {
   Loader2,
   AlertCircle,
 } from "lucide-react";
-import { gql } from "@apollo/client";
 import { useMutation } from "@apollo/client/react";
-
-const REGISTER = gql`
-  mutation RegisterData($name: String!, $email: String!, $password: String!) {
-    signup(name: $name, email: $email, password: $password) {
-      userError
-      name
-      email
-    }
-  }
-`;
+import { SuccessToast } from "../helper/ValidationHelper";
+import { REGISTER } from "../Mutation/auth.mutation";
 
 const RegisterForm = () => {
   const navigate = useNavigate();
@@ -36,6 +27,7 @@ const RegisterForm = () => {
 
   useEffect(() => {
     if (result && result?.name!) {
+      SuccessToast("User registered successfully");
       navigate("/login");
     } else {
       setError(result.userError);
