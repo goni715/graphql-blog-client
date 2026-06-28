@@ -26,3 +26,28 @@ export const PUBLISH_POST = gql`
     }
   }
 `;
+
+export const DELETE_POST = gql`
+  mutation DeletePost($postId: ID!) {
+    deletePost(postId: $postId) {
+      userError
+      post {
+        id
+        title
+        content
+      }
+    }
+  }
+`;
+
+export const UPDATE_POST = gql`
+  mutation UpdatePost($postId: ID!, $post: PostInput) {
+    updatePost(postId: $postId, post: $post) {
+      userError
+      post {
+        title
+        content
+      }
+    }
+  }
+`;
